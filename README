@@ -1,3 +1,64 @@
-Prática 2 de Fund. Data Ops 
+# Prática 2 - Geração de dados fake, orquestração com Temporal e carga no MongoDB Atlas
 
-— Geração de dados fake, orquestração com Temporal e carga no MongoDB Atlas
+Este projeto é uma atividade prática de DataOps que demonstra a criação de um pipeline de ingestão de dados orquestrado pelo Temporal.io, com persistência no MongoDB Atlas.
+
+## Estrutura do Projeto
+
+- `app/`: Contém o código fonte da aplicação.
+  - `generate_fake_csv.py`: Script para gerar dados sintéticos (~10MB).
+  - `activities.py`: Definição das atividades do Temporal.
+  - `workflows.py`: Definição do workflow de orquestração.
+  - `worker.py`: Worker que executa as atividades e workflows.
+  - `run_workflow.py`: Script para disparar a execução do pipeline.
+- `data/raw/`: Diretório onde o CSV gerado é armazenado (ignorado pelo Git).
+- `.env`: Arquivo de configuração de variáveis de ambiente.
+- `requirements.txt`: Dependências do projeto.
+
+## Pré-requisitos
+
+1. Python 3.11+
+2. Conta no MongoDB Atlas com um cluster configurado.
+3. Temporal CLI instalado.
+
+## Como Executar
+
+### 1. Configuração do Ambiente
+
+Instale as dependências:
+```bash
+pip install -r requirements.txt
+```
+
+Configure suas credenciais do MongoDB Atlas no arquivo `.env` (use o `.env.example` como base).
+
+### 2. Iniciar o Temporal Server
+
+Em um terminal, inicie o servidor de desenvolvimento do Temporal:
+```bash
+temporal server start-dev
+```
+
+### 3. Iniciar o Worker
+
+Em outro terminal, execute o worker:
+```bash
+python -m app.worker
+```
+
+### 4. Executar o Workflow
+
+Em um terceiro terminal, dispare o pipeline:
+```bash
+python -m app.run_workflow
+```
+
+## Resultados Esperados
+
+O pipeline irá:
+1. Gerar um arquivo CSV de aproximadamente 10MB com dados de pedidos fictícios.
+2. Carregar esses dados para a coleção configurada no MongoDB Atlas.
+3. Executar uma agregação no MongoDB para resumir os pedidos por status.
+4. Retornar o resultado consolidado no terminal.
+
+Você também pode acompanhar a execução através da UI do Temporal em `http://localhost:8233`.
+
